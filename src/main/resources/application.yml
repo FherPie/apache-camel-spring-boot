@@ -27,3 +27,4 @@ jwt:
   authority:
             key: role
             
+camel:  servlet:    mapping:      context-path: /*

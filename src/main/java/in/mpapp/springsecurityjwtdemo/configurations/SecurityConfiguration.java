@@ -24,6 +24,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import in.mpapp.springsecurityjwtdemo.dtos.UserPrincipal;
 import in.mpapp.springsecurityjwtdemo.services.impls.UserPrincipalService;
 import in.mpapp.springsecurityjwtdemo.utils.AuthTokenFilter;
@@ -116,7 +120,13 @@ public class SecurityConfiguration extends WebSecurityConfiguration {
     
     
     
-    
+//    @Bean
+//    public ObjectMapper getMapper() {
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+//        return objectMapper;
+//    }
     
     
 

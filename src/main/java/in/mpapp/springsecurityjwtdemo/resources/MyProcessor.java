@@ -1,4 +1,4 @@
-package in.mpapp.springsecurityjwtdemo.controllers;
+package in.mpapp.springsecurityjwtdemo.resources;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;

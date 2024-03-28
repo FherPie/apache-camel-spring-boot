@@ -9,21 +9,25 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.model.rest.RestBindingMode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import in.mpapp.springsecurityjwtdemo.models.requests.AuthenticationRequest;
 
 @Component
 public class DetalleResource extends RouteBuilder {
+	
+	
+	@Value("${server.port}")
+	private String portPortal;
 	
 
 	public void configure() throws Exception {
 		
         JacksonDataFormat df = new JacksonDataFormat();
 		// TODO Auto-generated method stub
-		restConfiguration().component("servlet").host("localhost").port(8092).contextPath("")
+		restConfiguration().component("servlet").host("localhost").port(portPortal).contextPath("")
 	    .bindingMode(RestBindingMode.auto);
 
 		rest("").get("/detalle").to("direct:gellalldetails").bindingMode(RestBindingMode.json).produces("application/json");

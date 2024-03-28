@@ -19,58 +19,61 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Component
-public class ClienteResource extends RouteBuilder {
+public class PresupuestoResource extends RouteBuilder {
 	
 	@Value("${server.port}")
 	private String portPortal;
+	
+	@Value("${ownKey.portalCrmDir}")
+	private String portalCrmDir;
 	
 	
 	public void configure() throws Exception {
 		
         JacksonDataFormat df = new JacksonDataFormat();
-		restConfiguration().component("servlet").host("localhost").port(8092).contextPath("")
+		restConfiguration().component("servlet").host("localhost").port(portPortal).contextPath("")
 	    .bindingMode(RestBindingMode.auto);
 		
-		rest("").get("/cliente").to("direct:gellallclients").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:gellallclients").routeId("getClients")
+		rest("").get("/producto").to("direct:gellallproducts").bindingMode(RestBindingMode.json).produces("application/json");
+		from("direct:gellallproducts").routeId("getProducts")
 		.setHeader(Exchange.HTTP_METHOD, simple("GET"))
         .setHeader("Accept",constant("application/json"))
-		.to("http://localhost:8080/api/cliente?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api/producto?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		.process(new MyProcessorList()).removeHeaders("*");
 		
-		rest("").post("/cliente").to("direct:postclients").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:postclients").routeId("postclients")
+		rest("").post("/producto").to("direct:postproducts").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
+		from("direct:postproducts").routeId("postproducts")
         .process(new MyProcessorObjectBefore())
 		.setHeader(Exchange.HTTP_METHOD, simple("POST"))
         .setHeader("Accept",constant("application/json"))
         .marshal(df)
-		.to("http://localhost:8080/api/cliente?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api/producto?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		.process(new MyProcessorObjectAfter())	.removeHeader("Access-Control-Allow-Origin");
 		
 		
 		
-		rest("").get("/cliente/{id}").to("direct:gettclientsid").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:gettclientsid").routeId("gettclientsid")
+		rest("").get("/producto/{id}").to("direct:gettproductsid").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
+		from("direct:gettproductsid").routeId("gettproductsid")
 		.setHeader(Exchange.HTTP_METHOD, simple("GET"))
         .setHeader("Accept",constant("application/json"))
-		.to("http://localhost:8080/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		 .unmarshal(df).removeHeaders("*");
 		
 		
-		rest("").put("/cliente").to("direct:putclients").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:putclients").routeId("putclients")
+		rest("").put("/producto").to("direct:putproducts").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
+		from("direct:putproducts").routeId("putproducts")
         .process(new MyProcessorObjectBefore())
 		.setHeader(Exchange.HTTP_METHOD, simple("PUT"))
         .setHeader("Accept",constant("application/json"))
         .marshal(df)
-		.to("http://localhost:8080/api/cliente?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api/producto?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		.process(new MyProcessorObjectAfter())	.removeHeader("Access-Control-Allow-Origin");
 
-		rest("").delete("/cliente/{id}").to("direct:deletetclientsid").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:deletetclientsid").routeId("deletetclientsid")
+		rest("").delete("/producto/{id}").to("direct:deletetproductsid").consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
+		from("direct:deletetproductsid").routeId("deletetproductsid")
 		.setHeader(Exchange.HTTP_METHOD, simple("DELETE"))
         .setHeader("Accept",constant("application/json"))
-		.to("http://localhost:8080/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		.log("${headers} ${body}")
 		.process( new MyProcessorObjectAfter())
 		.removeHeader("Access-Control-Allow-Origin");

@@ -28,3 +28,6 @@ jwt:
             key: role
             
 camel:  servlet:    mapping:      context-path: /api/*
+      
+ownKey:
+   portalCrmDir: http://localhost:8080

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Component
-public class PresupuestoResource extends RouteBuilder {
+public class PresupuestoDetalleResource extends RouteBuilder {
 	
 	@Value("${server.port}")
 	private String portPortal;
@@ -34,55 +34,17 @@ public class PresupuestoResource extends RouteBuilder {
 		restConfiguration().component("servlet").host("localhost").port(portPortal).contextPath("")
 	    .bindingMode(RestBindingMode.auto);
 		
-		rest("").get("/listarVenta").to("direct:gellalllistarVenta")
-		.bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:gellalllistarVenta").routeId("getlistarVenta")
-		.setHeader(Exchange.HTTP_METHOD, simple("GET"))
-        .setHeader("Accept",constant("application/json"))
-		.to(portalCrmDir+"/api/listarVenta?bridgeEndpoint=true&throwExceptionOnFailure=false")
-		.process(new MyProcessorObjectAfter()).removeHeaders("*");
+
 		
-		rest("").post("/guardarVenta").to("direct:postguardarVenta").consumes("application/json")
+		rest("").post("/addDetalle").to("direct:postaddDetalle").consumes("application/json")
 		.bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:postguardarVenta").routeId("guardarVenta")
+		from("direct:postaddDetalle").routeId("addDetalle")
         .process(new MyProcessorObjectBefore())
 		.setHeader(Exchange.HTTP_METHOD, simple("POST"))
         .setHeader("Accept",constant("application/json"))
         .marshal(df)
-		.to(portalCrmDir+"/api/guardarVenta?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.to(portalCrmDir+"/api/addDetalle?bridgeEndpoint=true&throwExceptionOnFailure=false")
 		.process(new MyProcessorObjectAfter())	.removeHeader("Access-Control-Allow-Origin");
-		
-		
-		
-		rest("").get("/getByIdVenta/{id}").to("direct:getByIdVenta")
-		.consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:getByIdVenta").routeId("getByIdVenta")
-		.setHeader(Exchange.HTTP_METHOD, simple("GET"))
-        .setHeader("Accept",constant("application/json"))
-		.to(portalCrmDir+"/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
-		 .unmarshal(df).removeHeaders("*");
-		
-		
-		rest("").put("/actualizarVenta").to("direct:putactualizarVenta")
-		.consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:putactualizarVenta").routeId("actualizarVenta")
-        .process(new MyProcessorObjectBefore())
-		.setHeader(Exchange.HTTP_METHOD, simple("PUT"))
-        .setHeader("Accept",constant("application/json"))
-        .marshal(df)
-		.to(portalCrmDir+"/api/actualizarVenta?bridgeEndpoint=true&throwExceptionOnFailure=false")
-		.process(new MyProcessorObjectAfter())
-		.removeHeader("Access-Control-Allow-Origin");
-
-		rest("").delete("/borrarVenta/{id}").to("direct:borrarVenta")
-		.consumes("application/json").bindingMode(RestBindingMode.json).produces("application/json");
-		from("direct:borrarVenta").routeId("borrarVenta")
-		.setHeader(Exchange.HTTP_METHOD, simple("DELETE"))
-        .setHeader("Accept",constant("application/json"))
-		.to(portalCrmDir+"/api?bridgeEndpoint=true&throwExceptionOnFailure=false")
-		.log("${headers} ${body}")
-		.process( new MyProcessorObjectAfter())
-		.removeHeader("Access-Control-Allow-Origin");
 		
 	}
 

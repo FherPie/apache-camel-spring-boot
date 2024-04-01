@@ -100,7 +100,7 @@ public class HomeController {
 		user.get().setPassword("");
 		TokenDTO tokenDto = new TokenDTO(token, null, user.get());
 
-		log.info("Generated Token DTO: ", token);
+		log.info("Generated Token DTO: ", tokenDto);
 		final AuthenticatedTokenResponse response = DataMapperUtil.convertTo(tokenDto,
 				AuthenticatedTokenResponse.class);
 		log.info("response ", response);

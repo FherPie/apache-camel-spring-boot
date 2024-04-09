@@ -38,8 +38,7 @@ public class EstablecimientoResource extends RouteBuilder {
 	public void configure() throws Exception {
 		
         JacksonDataFormat df = new JacksonDataFormat();
-		restConfiguration().component("servlet").host("localhost").port(portPortal).contextPath("")
-	    .bindingMode(RestBindingMode.auto);
+		restConfiguration().component("servlet").host("localhost").port(portPortal).contextPath("").bindingMode(RestBindingMode.off);
 		
 //		rest("").get("/listarEstablishment").to("direct:gellalllistarEstablishment")
 //		.bindingMode(RestBindingMode.json).produces("application/json");
@@ -49,15 +48,15 @@ public class EstablecimientoResource extends RouteBuilder {
 //		.to(portalCrmDir+"/api/listarEstablishment?bridgeEndpoint=true&throwExceptionOnFailure=false")
 //		.process(new MyProcessorObjectAfter()).removeHeaders("*");
 //		
-		rest("").post("/establishment").to("direct:postguardarEstablishment").consumes("application/json")
-		.bindingMode(RestBindingMode.json).produces("application/json");
+		rest("").post("/establishmentuser").consumes("multipart/form-data").to("direct:postguardarEstablishment").produces("multipart/form-data");
 		from("direct:postguardarEstablishment").routeId("guardarEstablishment")
+		.log("${body}")
         .process(new MyProcessorObjectBefore())
 		.setHeader(Exchange.HTTP_METHOD, simple("POST"))
-        .setHeader("Accept",constant("application/json"))
+        .setHeader("Accept",constant("multipart/form-data"))
         .marshal(df)
-		.to(portalCrmDir+"/api/establishment?bridgeEndpoint=true&throwExceptionOnFailure=false")
-		.process(new MyProcessorObjectAfter())	.removeHeader("Access-Control-Allow-Origin");
+		.to(portalCrmDir+"/api/establishmentuser?bridgeEndpoint=true&throwExceptionOnFailure=false")
+		.process(new MyProcessorObjectAfter()).removeHeader("Access-Control-Allow-Origin");
 		
 		
 		
